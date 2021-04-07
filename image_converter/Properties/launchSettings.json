@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "image_converter": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}
