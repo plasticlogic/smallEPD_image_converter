@@ -815,11 +815,12 @@ namespace image_converter
 
 				head_array[3] = color_channel;
 				/////////////////////////////////////////////////////////////////////////////////////////////
+			
 				StringBuilder sb = new StringBuilder();
 				Debug.Print("color channel: " + "0x" + sb.AppendFormat("{0:x2}", color_channel));
 
 				WriteFileHeader(legio_bw_string, legio_yellow_string, legio_green_string, legio_red_string, legio_blue_string);
-
+				color_channel = 0;
 
 
 
