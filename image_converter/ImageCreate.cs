@@ -466,7 +466,7 @@ namespace image_converter
 				acep_color_check_int = (int)acep_color_enum.blue;
 			}
 
-			if (acep_red >= 0xf0 && acep_green >= 0xf0 && acep_blue <= 0f)        // yellow
+			if (acep_red >= 0xf0 && acep_green >= 0xf0 && acep_blue <= 0x0f)        // yellow
 			{
 				acep_color_check_int = (int)acep_color_enum.yellow;
 			}
