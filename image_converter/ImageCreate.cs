@@ -44,12 +44,38 @@ namespace image_converter
 				for (int y = 0; y < source.Width; y++)
 				{
 					Color c = source.GetPixel(y, x);
-					int c_red = c.R;
-					int c_green = c.G;
-					int c_blue = c.B;
-					int g = Convert.ToInt32(0.3 * c.R + 0.59 *
-				c.G + 0.11 * c.B); //grayscale shade corresponding to rgb
-					bytes[x, y] = (byte)g;
+					byte c_red = c.R;
+					byte c_green = c.G;
+					byte c_blue = c.B;
+					//	int g = Convert.ToInt32(0.3 * c.R + 0.59 *
+					//c.G + 0.11 * c.B); //grayscale shade corresponding to rgb
+					if (c_red != c_green)
+					{
+						Debug.Print("GL error");
+					}
+
+
+
+					if (c_red <= 0x53)
+					{
+						c_red = 0x00;
+					}
+					else if (c_red > 0x53 && c_red <= 0x91)
+					{
+						c_red = 0x44;
+					}
+					else if (c_red > 0x91 && c_red <= 0xD0)
+					{
+						c_red = 0xAA;
+					}
+					else if (c_red > 0xD0 && c_red == 0xFF)
+					{
+						c_red = 0xFF;
+					}
+
+
+
+					bytes[x, y] = c_red;
 				}
 
 			}
@@ -440,39 +466,38 @@ namespace image_converter
 		public static int color_check(int acep_red, int acep_green, int acep_blue)
 		{
 			int acep_color_check_int = (int)acep_color_enum.white;
-			if (acep_red <= 0x0f && acep_green <= 0x0f && acep_blue <= 0x0f)        // black
+			if (acep_red <= 0xCD && acep_green <= 0xCD && acep_blue <= 0xCD)        // black
 			{
 				acep_color_check_int = (int)acep_color_enum.black;
 			}
 
-			if (acep_red >= 0xf0 && acep_green >= 0xf0 && acep_blue >= 0xf0)        // white
+			if (acep_red >= 0xCE && acep_green >= 0xCE && acep_blue >= 0xCE)        // white
 			{
 				acep_color_check_int = (int)acep_color_enum.white;
 			}
 
-			if (acep_red >= 0xf0 && acep_green <= 0x0f && acep_blue <= 0x0f)        // red
+			if (acep_red >= 0xAF && acep_green <= 0x50 && acep_blue <= 0x50)        // red
 			{
 				acep_color_check_int = (int)acep_color_enum.red;
 			}
 
 
-			if (acep_red <= 0x0f && acep_green >= 0xf0 && acep_blue <= 0x0f)        // green
+			if (acep_red <= 0x50 && acep_green >= 0xAF && acep_blue <= 0x50)        // green
 			{
 				acep_color_check_int = (int)acep_color_enum.green;
 			}
 
-			if (acep_red <= 0x0f && acep_green <= 0x0f && acep_blue >= 0xf0)        // blue
+			if (acep_red <= 0x50 && acep_green <= 0x50 && acep_blue >= 0xAF)        // blue
 			{
 				acep_color_check_int = (int)acep_color_enum.blue;
 			}
 
-			if (acep_red >= 0xf0 && acep_green >= 0xf0 && acep_blue <= 0x0f)        // yellow
+			if (acep_red >= 0xAF && acep_green >= 0xAF && acep_blue <= 0x50)        // yellow
 			{
 				acep_color_check_int = (int)acep_color_enum.yellow;
 			}
 
 			return acep_color_check_int;
-
 		}
 
 		enum acep_color_enum
