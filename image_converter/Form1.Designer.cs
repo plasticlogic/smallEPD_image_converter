@@ -35,7 +35,6 @@ namespace image_converter
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.checkBox_scramble = new System.Windows.Forms.CheckBox();
 			this.pictureBox_bw = new System.Windows.Forms.PictureBox();
 			this.pictureBox_yg = new System.Windows.Forms.PictureBox();
 			this.pictureBox_g = new System.Windows.Forms.PictureBox();
@@ -46,8 +45,9 @@ namespace image_converter
 			this.label5 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
-			this.checkBox_create_img_test = new System.Windows.Forms.CheckBox();
 			this.comboBox1 = new System.Windows.Forms.ComboBox();
+			this.comboBox2 = new System.Windows.Forms.ComboBox();
+			this.button_rotate = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox_bw)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox_yg)).BeginInit();
@@ -59,9 +59,9 @@ namespace image_converter
 			// button1
 			// 
 			this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.button1.Location = new System.Drawing.Point(241, 222);
+			this.button1.Location = new System.Drawing.Point(272, 219);
 			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(87, 29);
+			this.button1.Size = new System.Drawing.Size(98, 29);
 			this.button1.TabIndex = 0;
 			this.button1.Text = "choose";
 			this.button1.UseVisualStyleBackColor = true;
@@ -69,9 +69,10 @@ namespace image_converter
 			// 
 			// pictureBox1
 			// 
-			this.pictureBox1.Location = new System.Drawing.Point(74, 18);
+			this.pictureBox1.Location = new System.Drawing.Point(65, 12);
 			this.pictureBox1.Name = "pictureBox1";
 			this.pictureBox1.Size = new System.Drawing.Size(240, 146);
+			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
 			this.pictureBox1.TabIndex = 1;
 			this.pictureBox1.TabStop = false;
 			// 
@@ -89,7 +90,7 @@ namespace image_converter
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(12, 180);
+			this.label2.Location = new System.Drawing.Point(12, 185);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(362, 29);
 			this.label2.TabIndex = 3;
@@ -103,18 +104,6 @@ namespace image_converter
 			this.textBox1.Name = "textBox1";
 			this.textBox1.Size = new System.Drawing.Size(331, 145);
 			this.textBox1.TabIndex = 4;
-			// 
-			// checkBox_scramble
-			// 
-			this.checkBox_scramble.AutoSize = true;
-			this.checkBox_scramble.Location = new System.Drawing.Point(237, 282);
-			this.checkBox_scramble.Name = "checkBox_scramble";
-			this.checkBox_scramble.Size = new System.Drawing.Size(68, 17);
-			this.checkBox_scramble.TabIndex = 5;
-			this.checkBox_scramble.Text = "scramble";
-			this.checkBox_scramble.UseVisualStyleBackColor = true;
-			this.checkBox_scramble.Visible = false;
-			this.checkBox_scramble.CheckedChanged += new System.EventHandler(this.checkBox_scramble_CheckedChanged);
 			// 
 			// pictureBox_bw
 			// 
@@ -201,39 +190,60 @@ namespace image_converter
 			this.label7.TabIndex = 16;
 			this.label7.Text = "legio_b  EPD_BLUE";
 			// 
-			// checkBox_create_img_test
-			// 
-			this.checkBox_create_img_test.AutoSize = true;
-			this.checkBox_create_img_test.Location = new System.Drawing.Point(237, 259);
-			this.checkBox_create_img_test.Name = "checkBox_create_img_test";
-			this.checkBox_create_img_test.Size = new System.Drawing.Size(113, 17);
-			this.checkBox_create_img_test.TabIndex = 17;
-			this.checkBox_create_img_test.Text = "create image text  ";
-			this.checkBox_create_img_test.UseVisualStyleBackColor = true;
-			this.checkBox_create_img_test.Visible = false;
-			this.checkBox_create_img_test.CheckedChanged += new System.EventHandler(this.checkBox_create_img_test_CheckedChanged);
-			// 
 			// comboBox1
 			// 
 			this.comboBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.comboBox1.FormattingEnabled = true;
 			this.comboBox1.ItemHeight = 15;
 			this.comboBox1.Items.AddRange(new object[] {
-            "2.1\" Legio ( 6 color)",
-            "2.1\" Lectum ( 4 Greylevels)"});
-			this.comboBox1.Location = new System.Drawing.Point(34, 223);
+            "1.1\"(148x70)",
+            "1.4\"(100x180) ",
+            "2.1\"(240x146)",
+            "3.1\"(74x312) ",
+            "4.1\"(104x512)",
+            "3.57\"(640x400)"});
+			this.comboBox1.Location = new System.Drawing.Point(10, 223);
 			this.comboBox1.Name = "comboBox1";
-			this.comboBox1.Size = new System.Drawing.Size(189, 23);
+			this.comboBox1.Size = new System.Drawing.Size(106, 23);
 			this.comboBox1.TabIndex = 18;
 			this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+			// 
+			// comboBox2
+			// 
+			this.comboBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.comboBox2.FormattingEnabled = true;
+			this.comboBox2.ItemHeight = 15;
+			this.comboBox2.Items.AddRange(new object[] {
+            "Lectum ( 4 Greylevels)",
+            "Tricolor ( Red)",
+            "Tricolor ( Yellow)",
+            "Legio ( 6 Colors)",
+            "BW (UC8179)"});
+			this.comboBox2.Location = new System.Drawing.Point(122, 223);
+			this.comboBox2.Name = "comboBox2";
+			this.comboBox2.Size = new System.Drawing.Size(144, 23);
+			this.comboBox2.TabIndex = 19;
+			this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
+			// 
+			// button_rotate
+			// 
+			this.button_rotate.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.button_rotate.Location = new System.Drawing.Point(272, 254);
+			this.button_rotate.Name = "button_rotate";
+			this.button_rotate.Size = new System.Drawing.Size(97, 30);
+			this.button_rotate.TabIndex = 20;
+			this.button_rotate.Text = "rotate 180°";
+			this.button_rotate.UseVisualStyleBackColor = true;
+			this.button_rotate.Click += new System.EventHandler(this.button_rotate_Click);
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1038, 562);
+			this.Controls.Add(this.button_rotate);
+			this.Controls.Add(this.comboBox2);
 			this.Controls.Add(this.comboBox1);
-			this.Controls.Add(this.checkBox_create_img_test);
 			this.Controls.Add(this.label7);
 			this.Controls.Add(this.label6);
 			this.Controls.Add(this.label5);
@@ -244,7 +254,6 @@ namespace image_converter
 			this.Controls.Add(this.pictureBox_g);
 			this.Controls.Add(this.pictureBox_yg);
 			this.Controls.Add(this.pictureBox_bw);
-			this.Controls.Add(this.checkBox_scramble);
 			this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
@@ -286,7 +295,6 @@ namespace image_converter
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.CheckBox checkBox_scramble;
 		private System.Windows.Forms.PictureBox pictureBox_bw;
 		private System.Windows.Forms.PictureBox pictureBox_yg;
 		private System.Windows.Forms.PictureBox pictureBox_g;
@@ -297,8 +305,9 @@ namespace image_converter
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.CheckBox checkBox_create_img_test;
 		private System.Windows.Forms.ComboBox comboBox1;
+		private System.Windows.Forms.ComboBox comboBox2;
+		private System.Windows.Forms.Button button_rotate;
 	}
 }
 

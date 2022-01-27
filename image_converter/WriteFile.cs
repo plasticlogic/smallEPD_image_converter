@@ -69,6 +69,7 @@ namespace image_converter
 				string head_path = image_acep_folder_path + "\\" + text_name;
 
 				File.WriteAllText(head_path, image_head_complete);
+				File.WriteAllText(text_name_greyscale_path, image_head_array_string+legio_grey_string);  // scramble for MSP430 byte array
 				return true;
 			}
 			catch (Exception ex)
@@ -118,6 +119,28 @@ namespace image_converter
 
 			return char_string;
 		}
+
+
+
+
+		public string byte_array_to_char(byte[] byte_array)
+		{
+			string  char_string = null;
+
+
+			for (int i = 0; i < byte_array.Length; i++)
+			{
+				string comma_show = string.Empty;
+
+
+				char_string = char_string  + Convert.ToChar( byte_array[i]);
+
+			}
+
+			return char_string;
+		}
+
+
 
 
 		public string reform_file_name(string file_name)

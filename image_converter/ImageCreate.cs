@@ -56,11 +56,11 @@ namespace image_converter
 
 
 
-					if (c_red <= 0x53)
+					if (c_red <= 0x43)
 					{
 						c_red = 0x00;
 					}
-					else if (c_red > 0x53 && c_red <= 0x91)
+					else if (c_red > 0x43 && c_red <= 0x91)
 					{
 						c_red = 0x44;
 					}
@@ -197,14 +197,10 @@ namespace image_converter
 		}
 
 
-		public byte[] image_uc8156_array(byte[,] buffer_in, int image_height, int image_width)
+		public byte[] image_uc8156_array(byte[,] buffer_in, int image_height, int image_width)  // for 2.1 height 146, width 240
 		{
 
-			// only for T2.1
-			if (image_height > 146)
-			{
-				image_height = 146;
-			}
+
 			int image_pixel_sum = image_height * image_width;
 			byte[] image_array_buffer = new byte[image_pixel_sum];
 			byte[] image_array_buffer_temp = new byte[image_pixel_sum];
@@ -216,37 +212,37 @@ namespace image_converter
 			{
 				for (int j = 0; j < image_width; j++)
 				{
-					image_array_buffer_temp[i * image_width + j] = buffer_in[i, j];
+					image_array_buffer_temp[i * image_width + j] = buffer_in[i, j];  // image_array_buffer_temp here no scramble
 				}
 			}
 
 			byte[] image_scramble_buffer1 = new byte[image_pixel_sum];
 
-			for (int i = 0; i < 146; i++)
+			for (int i = 0; i < image_height; i++)
 			{
-				for (int j = 0; j < 240; j++)
+				for (int j = 0; j < image_width; j++)
 				{
-					if (j < 120)
+					if (j < image_width / 2)
 					{
 
-						image_array_buffer[i * 240 + j] = image_array_buffer_temp[i * 240 + j + 120];
+						image_array_buffer[i * image_width + j] = image_array_buffer_temp[i * image_width + j + image_width / 2];
 					}
 					else  //  image_array_buffer[j] von 120 bis 239
 					{
 
-						image_scramble_buffer1[i * 240 + j] = image_array_buffer_temp[i * 240 + j - 120];
+						image_scramble_buffer1[i * image_width + j] = image_array_buffer_temp[i * image_width + j - image_width / 2];
 					}
 				}
 
 			}
-			byte[] image_array_split = new byte[146 * 240]; // column 120, row 146
-			for (int i = 0; i < 146; i++)
+			byte[] image_array_split = new byte[image_height * image_width]; // column 120, row 146
+			for (int i = 0; i < image_height; i++)
 			{
-				for (int j = 0; j < 240; j++)
+				for (int j = 0; j < image_width; j++)
 				{
-					if (j >= 120)
+					if (j >= image_width / 2)
 					{
-						image_array_split[i * 240 + j] = image_scramble_buffer1[i * 240 + 359 - j];
+						image_array_split[i * image_width + j] = image_scramble_buffer1[i * image_width + image_width + image_width / 2 - 1 - j];
 					}
 
 				}
@@ -255,32 +251,27 @@ namespace image_converter
 
 
 
-			for (int i = 0; i < 146; i++)
+			for (int i = 0; i < image_height; i++)
 			{
-				for (int j = 0; j < 240; j++)
+				for (int j = 0; j < image_width; j++)
 				{
 
-					if (j >= 120)
+					if (j >= image_width / 2)
 					{
 
-						image_array_buffer[i * 240 + j] = image_array_split[i * 240 + j];
+						image_array_buffer[i * image_width + j] = image_array_split[i * image_width + j];
 					}
 				}
+
 
 			}
 
 
 
 			int image_uc8156_buffer_count = image_height * image_width / 4;
-			if (check_scramble)
-			{
-				image_uc8156_buffer = byte_array_pixel_8156(image_array_buffer, image_height, image_width);
-			}
-			else
-			{
-				image_uc8156_buffer = byte_array_pixel_8156(image_array_buffer_temp, image_height, image_width);
-			}
 
+			//	image_uc8156_buffer = byte_array_pixel_8156(image_array_buffer_temp, image_height, image_width);
+			image_uc8156_buffer = byte_array_pixel_8156(image_array_buffer, image_height, image_width);
 			return image_uc8156_buffer;
 		}
 
@@ -291,16 +282,57 @@ namespace image_converter
 
 
 
-
-
-		public byte[] image_uc8156_array_no_scramble(byte[,] buffer_in, int image_height, int image_width)
+		public byte[] image_uc8156_S031_array(byte[,] buffer_in, int image_height, int image_width)  // for 2.1 height 146, width 240
 		{
 
-			// only for T2.1
-			if (image_height > 146)
+
+			int image_pixel_sum = image_height * image_width;            // height->gate: 312; width-> source: 74
+			int gate_line_new = image_height / 2;						// 312 / 2 = 156
+			int source_line_new = image_width * 2;						// 74x2	= 148
+			byte[,] buffer_array_temp = new byte[gate_line_new, source_line_new];  // [156, 148]
+		
+			byte[] image_array_buffer = new byte[image_pixel_sum];
+			for (int j = 0; j < gate_line_new; j++)
 			{
-				image_height = 146;
+				byte[] source_buffer = new byte[source_line_new];
+				for (int k = 0; k < image_width; k++)
+				{
+					source_buffer[k] = buffer_in[j*2,k];
+					source_buffer[image_width + k] = buffer_in[j*2+1, k];
+				}
+				for (int i = 0; i < source_line_new/2; i++)
+				{
+					buffer_array_temp[j, i * 2] = source_buffer[source_line_new / 2 + i];
+					buffer_array_temp[j, i * 2 + 1] = source_buffer[i];
+				}
+
+
 			}
+
+			for (int j = 0; j < gate_line_new; j++)
+			{
+				for (int i = 0; i < source_line_new; i++)
+				{
+					image_array_buffer[j * source_line_new + i] = buffer_array_temp[j,i];
+				}
+
+			}
+
+			//	image_uc8156_buffer = byte_array_pixel_8156(image_array_buffer_temp, image_height, image_width);
+			byte[] image_uc8156_buffer = byte_array_pixel_8156(image_array_buffer, gate_line_new, source_line_new);
+			return image_uc8156_buffer;
+		}
+
+
+
+
+
+
+
+
+		public byte[] image_uc8156_array_no_scramble(byte[,] buffer_in, int image_height, int image_width)  // 2D byte array to 1D byte array ,right now for 2.1 Legio and 1.1 Lectum
+		{
+
 			int image_pixel_sum = image_height * image_width;
 			byte[] image_array_buffer = new byte[image_pixel_sum];
 			byte[] image_array_buffer_temp = new byte[image_pixel_sum];
@@ -323,8 +355,50 @@ namespace image_converter
 		}
 
 
+		public byte[] image_uc8179_array_no_scramble(byte[,] buffer_in, int image_height, int image_width)  // 2D byte array to 1D byte array ,right now for 2.1 Legio and 1.1 Lectum
+		{
+
+			int image_pixel_sum = image_height * image_width;
+			byte[] image_array_buffer = new byte[image_pixel_sum];
+			byte[] image_array_buffer_temp = new byte[image_pixel_sum];
 
 
+			byte[] image_uc8156_buffer = new byte[image_height * image_width / 8];
+
+			for (int i = 0; i < image_height; i++)
+			{
+				for (int j = 0; j < image_width; j++)
+				{
+					image_array_buffer_temp[i * image_width + j] = buffer_in[i, j];
+				}
+			}
+
+			image_uc8156_buffer = byte_array_pixel_8179(image_array_buffer_temp, image_height, image_width);
+
+
+			return image_uc8156_buffer;
+		}
+
+
+
+
+		public byte[] image_uc8156_array_full_no_scramble(byte[,] buffer_in, int image_height, int image_width)  // full byte array without scrambling or bit work
+		{
+
+			int image_pixel_sum = image_height * image_width;
+			byte[] image_array_buffer = new byte[image_pixel_sum];
+
+
+			for (int i = 0; i < image_height; i++)
+			{
+				for (int j = 0; j < image_width; j++)
+				{
+					image_array_buffer[i * image_width + j] = buffer_in[i, j];
+				}
+			}
+
+			return image_array_buffer;
+		}
 
 
 
@@ -359,7 +433,7 @@ namespace image_converter
 									char check_char = reader.ReadChar();
 									if (check_char == '\n')
 									{
-										bool find = true;
+									
 										break;
 									}
 
@@ -498,6 +572,7 @@ namespace image_converter
 			}
 
 			return acep_color_check_int;
+
 		}
 
 		enum acep_color_enum
@@ -573,7 +648,7 @@ namespace image_converter
 
 
 
-					byte[] image_uc8156_buffer = image_uc8156_array(image_byte_array, image_height, image_width);
+					byte[] image_uc8156_buffer = image_uc8156_array_no_scramble(image_byte_array, image_height, image_width);
 
 					legio_bw_string = "," + byte_array_to_string(image_uc8156_buffer);
 
@@ -624,7 +699,7 @@ namespace image_converter
 
 
 
-					byte[] image_uc8156_buffer = image_uc8156_array(image_byte_array, image_height, image_width);
+					byte[] image_uc8156_buffer = image_uc8156_array_no_scramble(image_byte_array, image_height, image_width);
 					legio_yellow_string = "," + byte_array_to_string(image_uc8156_buffer);
 
 
@@ -678,7 +753,7 @@ namespace image_converter
 
 
 
-					byte[] image_uc8156_buffer = image_uc8156_array(image_byte_array, image_height, image_width);
+					byte[] image_uc8156_buffer = image_uc8156_array_no_scramble(image_byte_array, image_height, image_width);
 
 					legio_green_string = "," + byte_array_to_string(image_uc8156_buffer);
 
@@ -741,7 +816,7 @@ namespace image_converter
 
 
 
-					byte[] image_uc8156_buffer = image_uc8156_array(image_byte_array, image_height, image_width);
+					byte[] image_uc8156_buffer = image_uc8156_array_no_scramble(image_byte_array, image_height, image_width);
 					legio_red_string = "," + byte_array_to_string(image_uc8156_buffer);
 
 
@@ -796,7 +871,7 @@ namespace image_converter
 
 
 
-					byte[] image_uc8156_buffer = image_uc8156_array(image_byte_array, image_height, image_width);
+					byte[] image_uc8156_buffer = image_uc8156_array_no_scramble(image_byte_array, image_height, image_width);
 					legio_blue_string = "," + byte_array_to_string(image_uc8156_buffer);
 
 
@@ -886,7 +961,7 @@ namespace image_converter
 
 
 
-		public byte[] byte_array_pixel_8156(byte[] image_array_buffer, int image_height, int image_width)
+		public byte[] byte_array_pixel_8156(byte[] image_array_buffer, int image_height, int image_width)  // rebuild the byte array for UC8156
 		{
 
 			int image_uc8156_buffer_count = image_height * image_width / 4;
@@ -903,7 +978,38 @@ namespace image_converter
 
 
 
+		public byte[] byte_array_pixel_8179(byte[] image_array_buffer, int image_height, int image_width)  // rebuild the byte array for UC8179
+		{
 
+			int image_uc8179_buffer_count = image_height * image_width / 8;
+			byte[] image_uc8179_buffer = new byte[image_uc8179_buffer_count];
+			for (int i = 0; i < image_uc8179_buffer_count; i++)
+			{
+				image_uc8179_buffer[i] = (byte)((image_array_buffer[i * 8] & 0x80) | ((image_array_buffer[i * 8 + 1] & 0x80) >> 1 )| ((image_array_buffer[i * 8 + 2] & 0x80) >> 2) | ((image_array_buffer[i * 8 + 3]) >> 3) | ((image_array_buffer[i * 8 + 4]) >> 4) | ((image_array_buffer[i * 8 + 5]) >> 5) | ((image_array_buffer[i * 8 + 6]) >> 6) | ((image_array_buffer[i * 8 + 7]) >> 7));
+
+
+			}
+			return image_uc8179_buffer;
+
+		}
+
+
+		public Bitmap SaveByteArryToBitmap(Byte[,] data, int width, int height)
+		{
+			Bitmap bmp = new Bitmap(width, height);
+
+			for (int r = 0; r < height; r++)
+			{
+				for (int c = 0; c < width; c++)
+				{
+					Byte value = data[r, c];
+					bmp.SetPixel(c, r, Color.FromArgb(value, value, value));
+				}
+			}
+
+			return bmp;
+
+		}
 
 
 
